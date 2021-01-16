@@ -2,6 +2,7 @@ package com.example.shymko_hw_lesson13_080121_basicview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -9,18 +10,26 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.shymko_hw_lesson13_080121_basicview.databinding.ActivityMainBinding
 
+/*
+Layout у якому є 3 Views: TextView, ProgressBar (Circle) і Button.
+TextView має значення n = 0.
+ProgressBar - не видимий і знаходиться по центру layout
+При кліку на кнопку Button: TextView і Button зникають, а ProgressBar з’являється на (n+1)/10 секунд.
+Після чого видимість об`єктів повертається на попередню.
+І значення TextView (n) збільшується на 1.
+ */
+
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     companion object {
-        var tvCounter: Int = 0
+        var tvCounter: Long = 0
         var startTriger: Boolean = false
         internal var status = 0
         private val handler = Handler()
+        private lateinit var binding: ActivityMainBinding
     }
 
-     var tempBundle: Bundle =  Bundle();
-
-    private lateinit var binding: ActivityMainBinding
+    var tempBundle: Bundle = Bundle();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +45,9 @@ class MainActivity : AppCompatActivity() {
         setupOnClickListener()
         elementsDisappearing(startTriger)
         incrementionTextView(startTriger)
-        startTriger=false
+        timeCalculation(startTriger)
         Log.d("OnStart", "startTriger $startTriger")
     }
-
 
     private fun setupBinding() {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -63,9 +71,12 @@ class MainActivity : AppCompatActivity() {
                     //textView.text = String.format("%d%%", status)
                 }
                 try {
-                    Thread.sleep(1600)
+                    Thread.sleep(160)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
+                }
+                if (status == 99) {
+                    status = 0
                 }
             }
         }.start()
@@ -73,24 +84,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupOnClickListener() {
         binding.btnButton.setOnClickListener {
-            Toast.makeText(this, "HELLO", Toast.LENGTH_SHORT)
-                    .show()
             startTriger = true
-         //   onCreate(tempBundle)
             onStart()
         }
     }
 
-    fun timeCalculation(triger: Boolean): Long {
-        var a: Long = 100
-        return a
+    fun timeCalculation(triger: Boolean) {
+        if (triger) {
+            var timeOfHid: Long = ((tvCounter + 1) / 10) * 1000
+            object : CountDownTimer(timeOfHid, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                }
+
+                override fun onFinish() {
+                    startTriger = false
+                    Log.d("onFinish", "startTriger $startTriger")
+                    onStart()
+                }
+            }.start()
+        }
     }
 
-    fun elementsDisappearing(triger: Boolean) {
+    fun elementsDisappearing(trigerHide: Boolean) {
         val progressBar: ProgressBar = findViewById(R.id.circularProgressbar)
-        if (triger) {
-           // binding.btnButton.setVisibility(View.INVISIBLE)
-            //binding.tvTextView.setVisibility(View.INVISIBLE)
+        if (trigerHide) {
+            binding.btnButton.setVisibility(View.INVISIBLE)
+            binding.tvTextView.setVisibility(View.INVISIBLE)
             progressBar.setVisibility(View.VISIBLE)
         } else {
             binding.btnButton.setVisibility(View.VISIBLE)
@@ -102,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     private fun incrementionTextView(triger: Boolean) {
         if (triger) {
             tvCounter++
-            binding.tvTextView.text = tvCounter.toString()
+            binding.tvTextView.text = "n= " + tvCounter.toString()
         }
     }
 }

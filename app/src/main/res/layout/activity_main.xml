@@ -18,18 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvTextViewTimer"
-        android:layout_width="29dp"
-        android:layout_height="13dp"
-        android:text="timer"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/circularProgressbar"
-        app:layout_constraintEnd_toStartOf="@+id/tvTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
     <Button
         android:id="@+id/btnButton"
         android:layout_width="wrap_content"
