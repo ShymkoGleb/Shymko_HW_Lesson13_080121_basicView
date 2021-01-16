@@ -3,6 +3,7 @@ package com.example.shymko_hw_lesson13_080121_basicview
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -15,9 +16,9 @@ class MainActivity : AppCompatActivity() {
         var startTriger: Boolean = false
         internal var status = 0
         private val handler = Handler()
-
     }
 
+     var tempBundle: Bundle =  Bundle();
 
     private lateinit var binding: ActivityMainBinding
 
@@ -27,12 +28,16 @@ class MainActivity : AppCompatActivity() {
         setupBinding()
         setupOnClickListener()
         progresBar()
-        //incrementionTextView(tvCounter)
     }
 
     override fun onStart() {
         super.onStart()
+        Log.d("OnStart", "startTriger $startTriger")
+        setupOnClickListener()
         elementsDisappearing(startTriger)
+        incrementionTextView(startTriger)
+        startTriger=false
+        Log.d("OnStart", "startTriger $startTriger")
     }
 
 
@@ -71,6 +76,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "HELLO", Toast.LENGTH_SHORT)
                     .show()
             startTriger = true
+         //   onCreate(tempBundle)
             onStart()
         }
     }
@@ -83,22 +89,22 @@ class MainActivity : AppCompatActivity() {
     fun elementsDisappearing(triger: Boolean) {
         val progressBar: ProgressBar = findViewById(R.id.circularProgressbar)
         if (triger) {
-            binding.btnButton.setVisibility(View.INVISIBLE)
-            binding.tvTextView.setVisibility(View.INVISIBLE)
+           // binding.btnButton.setVisibility(View.INVISIBLE)
+            //binding.tvTextView.setVisibility(View.INVISIBLE)
             progressBar.setVisibility(View.VISIBLE)
         } else {
             binding.btnButton.setVisibility(View.VISIBLE)
             binding.tvTextView.setVisibility(View.VISIBLE)
             progressBar.setVisibility(View.INVISIBLE)
-
         }
     }
 
-    private fun incrementionTextView(conter: Int) {
-        binding.tvTextView.text = conter.toString()
+    private fun incrementionTextView(triger: Boolean) {
+        if (triger) {
+            tvCounter++
+            binding.tvTextView.text = tvCounter.toString()
+        }
     }
-
-
 }
 
 
